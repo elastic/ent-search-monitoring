@@ -16,4 +16,8 @@ For more information on Enterprise Search monitoring, please refer to [Enterpris
 
 The following dashboards are available at this time:
 
-[**Enterprise Search Overview**](enterprise-search-overview.ndjson) - a general monitoring overview page with product usage information, HTTP metrics, low-level resource utilization information (JVM metrics) and background workers details. This dashboard should work with standalone Metricbeat deployments and with Enterprise Search deployments running metricbeat as an internal monitoring component (see `monitoring.*` settings in `enterprise_search.yml`).
+### [**Enterprise Search Overview**](enterprise-search-overview.ndjson)
+
+A general monitoring overview page with product usage information, HTTP metrics, low-level resource utilization information (JVM metrics) and background workers details.
+
+This dashboard should work with standalone Metricbeat deployments and with Enterprise Search deployments running metricbeat as an internal monitoring component (see `monitoring.*` settings in `enterprise_search.yml`).
