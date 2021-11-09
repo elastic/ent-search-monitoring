@@ -20,4 +20,10 @@ The following dashboards are available at this time:
 
 A general monitoring overview page with product usage information, HTTP metrics, low-level resource utilization information (JVM metrics) and background workers details.
 
-This dashboard should work with standalone Metricbeat deployments and with Enterprise Search deployments running metricbeat as an internal monitoring component (see `monitoring.*` settings in `enterprise_search.yml`).
+This dashboard should work with standalone Metricbeat deployments and with Enterprise Search deployments running metricbeat as an internal monitoring component (see `monitoring.*` settings in `enterprise_search.yml`) starting with version 7.16.
+
+### [**Crawler**](enterprise-search-overview.ndjson)
+
+A detailed monitoring page for the Enterprise Search Crawler, showing general usage information and details on crawler activity for each node.
+
+This dashboard should work with standalone Metricbeat deployments and with Enterprise Search deployments running metricbeat as an internal monitoring component (see `monitoring.*` settings in `enterprise_search.yml`) starting with version 8.0.
