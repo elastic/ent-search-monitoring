@@ -2,7 +2,7 @@
 
 This repository contains a set of [Kibana dashboards](https://www.elastic.co/guide/en/kibana/current/dashboard.html) to be used with [Elastic Enterprise Search](https://www.elastic.co/enterprise-search) and Elastic Metricbeat for monitoring production deployments.
 
-**Please note:** These dashboards only work with Kibana and Enterprise Search versions 7.16.0 and higher.
+**Please note:** These dashboards only work with Kibana and Enterprise Search versions 7.16.0 and higher. Dashboards differ between versions of the stack, so please pick the version closest to your current release, but not higher (8.0 for any 8.x release, 7.16 for releases before 8.0).
 
 ## Installation
 
