@@ -31,8 +31,3 @@ This dashboard should work with standalone Metricbeat deployments and with Enter
 A detailed monitoring page for the Enterprise Search Crawler, showing general usage information and details on crawler activity for each node.
 
 This dashboard should work with standalone Metricbeat deployments and with Enterprise Search deployments running metricbeat as an internal monitoring component (see `monitoring.*` settings in `enterprise_search.yml`) starting with version 8.0.
-
-## Known Issues
-
-* Dashboards for 7.16 do not support multi-node deployments (all node-specific metrics will be mixed from multiple nodes instead of being aggregated). The issue is fixed in 8.0.0 version of dashboards.
-
