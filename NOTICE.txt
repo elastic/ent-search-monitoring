@@ -1,0 +1,2 @@
+Enterprise Search Monitoring Dashboards
+Copyright 2012-2021 Elasticsearch B.V.
