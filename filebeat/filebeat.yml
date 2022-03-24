@@ -1,0 +1,183 @@
+################## Enterprise Search Filebeat Configuration Example #####################
+
+# This file is an example configuration file for ingesting Enterprise Search logs into
+# Elasticsearch highlighting only the most common options.
+#
+# You can find the full configuration reference here:
+# https://www.elastic.co/guide/en/beats/filebeat/index.html
+
+# For more available modules and options, please see the filebeat.reference.yml sample
+# configuration file in Filebeat install directory.
+
+# ---------------------------- Elasticsearch Output ----------------------------
+output.elasticsearch:
+  hosts: ["<elasticsearch_host>"]
+  username: "<elasticsearch_username>"
+  password: "<elasticsearch_password>"
+  # SSL verification mode: true or false
+  ssl.verification_mode: <elasticsearch_ssl_verification_mode>
+
+setup.ilm.enabled: true
+
+# ================================== Logging ===================================
+logging.level: info
+logging.to_files: true
+logging.json: true
+logging.files:
+  path: <filebeat_log_dir>
+  name: filebeat.log
+  keepfiles: 3
+
+# ============================== Filebeat inputs ===============================
+filebeat.inputs:
+  # Enterprise Search main log
+  - type: log
+    paths:
+      - "<enterprise_search_dir>/logs/app-server.log*"
+    enabled: true
+    json.message_key:
+    json.keys_under_root: true
+    json.overwrite_keys: true
+    fields:
+      event.dataset: enterprise_search.server
+      # The following fields are set as an example for identifying the deployment,
+      #  Enterprise Search version, and specific nodes. Any fields specified in this
+      #  section will be added to the log events
+      service.name: '<deployment_name>'
+      service.id: '<deployment_id>'
+      service.version: '<instance_version>'
+      service.node.name: '<instance_id>'
+    fields_under_root: true
+
+    # Automated processes log
+  - type: log
+    paths:
+      - "<enterprise_search_dir>/logs/worker.log*"
+    enabled: true
+    json.message_key:
+    json.keys_under_root: true
+    json.overwrite_keys: true
+    fields:
+      event.dataset: enterprise_search.worker
+      service.name: '<deployment_name>'
+      service.id: '<deployment_id>'
+      service.version: '<instance_version>'
+      service.node.name: '<instance_id>'
+    fields_under_root: true
+
+    # Workplace Search connectors log
+  - type: log
+    paths:
+      - "<enterprise_search_dir>/logs/connectors.log*"
+    enabled: true
+    json.message_key:
+    json.keys_under_root: true
+    json.overwrite_keys: true
+    fields:
+      event.dataset: enterprise_search.connectors
+      service.name: '<deployment_name>'
+      service.id: '<deployment_id>'
+      service.version: '<instance_version>'
+      service.node.name: '<instance_id>'
+    fields_under_root: true
+
+    # Crawler log
+  - type: log
+    paths:
+      - "<enterprise_search_dir>/logs/crawler.log*"
+    enabled: true
+    json.message_key:
+    json.keys_under_root: true
+    json.overwrite_keys: true
+    fields:
+      event.dataset: enterprise_search.crawler
+      service.name: '<deployment_name>'
+      service.id: '<deployment_id>'
+      service.version: '<instance_version>'
+      service.node.name: '<instance_id>'
+    fields_under_root: true
+
+    # Filebeat log
+  - type: log
+    paths:
+      - "<enterprise_search_dir>/logs/filebeat*"
+    enabled: true
+    fields:
+      event.dataset: enterprise_search.filebeat
+      service.name: '<deployment_name>'
+      service.id: '<deployment_id>'
+      service.node.name: '<instance_id>'
+      service.version: '<instance_version>'
+      service.type: 'enterprise-search'
+    fields_under_root: true
+    processors:
+      - dissect:
+          tokenizer: "%{timestamp}\t%{log.level}\t%{message2}"
+          field: message
+          target_prefix: ""
+      - timestamp:
+          field: timestamp
+          layouts:
+            - '2006-01-02T15:04:05.999Z'
+      - drop_fields:
+          fields: [message]
+      - rename:
+          fields:
+            - from: message2
+              to: message
+      - drop_fields:
+          fields: [timestamp]
+
+    # HTTP Requests log
+  - type: log
+    paths:
+      - "<enterprise_search_dir>/logs/system.log*"
+    enabled: true
+    json.message_key:
+    json.keys_under_root: true
+    json.overwrite_keys: true
+    fields:
+      event.dataset: enterprise_search.system
+      service.name: '<deployment_name>'
+      service.id: '<deployment_id>'
+      service.node.name: '<instance_id>'
+      service.version: '<instance_version>'
+      service.type: 'enterprise-search'
+    fields_under_root: true
+    processors:
+      - timestamp:
+          field: timestamp
+          layouts:
+            - '2006-01-02T15:04:05-07:00'
+      - script:
+          lang: javascript
+          id: convert_duration
+          source: >
+            function process(event) {
+              var duration = event.Get("duration");
+              if (duration) {
+                event.Put("event.duration", Math.round(duration * 1000000000));
+                event.Delete("duration");
+              }
+
+              return event;
+            }
+      - drop_fields:
+          fields: [timestamp]
+      - rename:
+          ignore_missing: true
+          fields:
+            - from: method
+              to: http.request.method
+            - from: http_version
+              to: http.version
+            - from: status
+              to: http.response.status_code
+            - from: request_body_size
+              to: http.request.body.bytes
+            - from: response_body_size
+              to: http.response.body.bytes
+            - from: path
+              to: url.path
+            - from: host
+              to: url.original
