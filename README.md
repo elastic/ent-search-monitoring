@@ -1,3 +1,5 @@
+<p align="center"><img src="https://github.com/elastic/ent-search-monitoring/blob/main/logo-enterprise-search.png?raw=true" alt="Elastic Enterprise Search Logo"></p>
+
 # Elastic Enterprise Search Monitoring Dashboard
 
 This repository contains a set of [Kibana dashboards](https://www.elastic.co/guide/en/kibana/current/dashboard.html) to be used with [Elastic Enterprise Search](https://www.elastic.co/enterprise-search) and Elastic Metricbeat for monitoring production deployments.
