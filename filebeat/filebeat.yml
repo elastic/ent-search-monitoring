@@ -33,7 +33,7 @@ filebeat.inputs:
   # Enterprise Search main log
   - type: log
     paths:
-      - "<enterprise_search_dir>/logs/app-server.log*"
+      - "<enterprise_search_dir>/log/app-server.log*"
     enabled: true
     json.message_key:
     json.keys_under_root: true
@@ -52,7 +52,7 @@ filebeat.inputs:
     # Automated processes log
   - type: log
     paths:
-      - "<enterprise_search_dir>/logs/worker.log*"
+      - "<enterprise_search_dir>/log/worker.log*"
     enabled: true
     json.message_key:
     json.keys_under_root: true
@@ -68,7 +68,7 @@ filebeat.inputs:
     # Workplace Search connectors log
   - type: log
     paths:
-      - "<enterprise_search_dir>/logs/connectors.log*"
+      - "<enterprise_search_dir>/log/connectors.log*"
     enabled: true
     json.message_key:
     json.keys_under_root: true
@@ -84,7 +84,7 @@ filebeat.inputs:
     # Crawler log
   - type: log
     paths:
-      - "<enterprise_search_dir>/logs/crawler.log*"
+      - "<enterprise_search_dir>/log/crawler.log*"
     enabled: true
     json.message_key:
     json.keys_under_root: true
@@ -100,7 +100,7 @@ filebeat.inputs:
     # Filebeat log
   - type: log
     paths:
-      - "<enterprise_search_dir>/logs/filebeat*"
+      - "<enterprise_search_dir>/log/filebeat*"
     enabled: true
     fields:
       event.dataset: enterprise_search.filebeat
@@ -131,7 +131,7 @@ filebeat.inputs:
     # HTTP Requests log
   - type: log
     paths:
-      - "<enterprise_search_dir>/logs/system.log*"
+      - "<enterprise_search_dir>/log/system.log*"
     enabled: true
     json.message_key:
     json.keys_under_root: true
