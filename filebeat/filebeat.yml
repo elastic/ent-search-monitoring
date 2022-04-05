@@ -3,6 +3,8 @@
 # This file is an example configuration file for ingesting Enterprise Search logs into
 # Elasticsearch highlighting only the most common options.
 #
+# Logs will be ingested into filebeat-{filebeat-version}
+#
 # You can find the full configuration reference here:
 # https://www.elastic.co/guide/en/beats/filebeat/index.html
 
@@ -14,12 +16,27 @@ output.elasticsearch:
   hosts: ["<elasticsearch_host>"]
   username: "<elasticsearch_username>"
   password: "<elasticsearch_password>"
-  # SSL verification mode: true or false
-  ssl.verification_mode: <elasticsearch_ssl_verification_mode>
+  # Index name for Enterprise Search logs
+  index: "ent-search-logs-8"
+  bulk_max_size: 50
 
-setup.ilm.enabled: true
+setup.template:
+  overwrite: false
+  json:
+    enabled: true
+    path: "filebeat-template-8.json"
+    name: "ent-search-logs-8"
+  name: "ent-search-logs-8"
+  pattern: "ent-search-logs-8*"
 
-# ================================== Logging ===================================
+setup.ilm:
+  policy_name: "ent-search-logs"
+
+processors:
+  - drop_event.when.has_fields:
+      - labels.skip_ingest
+
+# ============================= Filebeat Logging ===============================
 logging.level: info
 logging.to_files: true
 logging.json: true
@@ -31,13 +48,16 @@ logging.files:
 # ============================== Filebeat inputs ===============================
 filebeat.inputs:
   # Enterprise Search main log
-  - type: log
+  - type: filestream
+    id: enterprise_search_logs
     paths:
-      - "<enterprise_search_dir>/log/app-server.log*"
-    enabled: true
-    json.message_key:
-    json.keys_under_root: true
-    json.overwrite_keys: true
+      - "<enterprise-search-dir>log/app-server.log*"
+    parsers:
+      - multiline:
+          type: pattern
+          pattern: '^\['
+          negate: true
+          match: after
     fields:
       event.dataset: enterprise_search.server
       # The following fields are set as an example for identifying the deployment,
@@ -49,30 +69,17 @@ filebeat.inputs:
       service.node.name: '<instance_id>'
     fields_under_root: true
 
-    # Automated processes log
-  - type: log
-    paths:
-      - "<enterprise_search_dir>/log/worker.log*"
-    enabled: true
-    json.message_key:
-    json.keys_under_root: true
-    json.overwrite_keys: true
-    fields:
-      event.dataset: enterprise_search.worker
-      service.name: '<deployment_name>'
-      service.id: '<deployment_id>'
-      service.version: '<instance_version>'
-      service.node.name: '<instance_id>'
-    fields_under_root: true
-
     # Workplace Search connectors log
-  - type: log
+  - type: filestream
+    id: connector_logs
     paths:
-      - "<enterprise_search_dir>/log/connectors.log*"
-    enabled: true
-    json.message_key:
-    json.keys_under_root: true
-    json.overwrite_keys: true
+      - "<enterprise-search-dir>log/connectors.log*"
+    parsers:
+      - multiline:
+          type: pattern
+          pattern: '^\['
+          negate: true
+          match: after
     fields:
       event.dataset: enterprise_search.connectors
       service.name: '<deployment_name>'
@@ -82,13 +89,16 @@ filebeat.inputs:
     fields_under_root: true
 
     # Crawler log
-  - type: log
+  - type: filestream
+    id: crawler_logs
     paths:
-      - "<enterprise_search_dir>/log/crawler.log*"
-    enabled: true
-    json.message_key:
-    json.keys_under_root: true
-    json.overwrite_keys: true
+      - "<enterprise-search-dir>log/crawler.log*"
+    parsers:
+      - multiline:
+          type: pattern
+          pattern: '^\['
+          negate: true
+          match: after
     fields:
       event.dataset: enterprise_search.crawler
       service.name: '<deployment_name>'
@@ -97,71 +107,50 @@ filebeat.inputs:
       service.node.name: '<instance_id>'
     fields_under_root: true
 
-    # Filebeat log
-  - type: log
+    # API and Analytics log
+  - type: filestream
+    id: api_analytics_logs
     paths:
-      - "<enterprise_search_dir>/log/filebeat*"
-    enabled: true
+      - "<enterprise-search-dir>log/filebeat.log*"
+    parsers:
+      - ndjson:
+          keys_under_root: true
+          overwrite_keys: true
+          add_error_key: true
+    processors:
+      - drop_fields:
+          fields: ["data_stream"]
+          ignore_missing: false
     fields:
-      event.dataset: enterprise_search.filebeat
       service.name: '<deployment_name>'
       service.id: '<deployment_id>'
-      service.node.name: '<instance_id>'
       service.version: '<instance_version>'
-      service.type: 'enterprise-search'
+      service.node.name: '<instance_id>'
     fields_under_root: true
-    processors:
-      - dissect:
-          tokenizer: "%{timestamp}\t%{log.level}\t%{message2}"
-          field: message
-          target_prefix: ""
-      - timestamp:
-          field: timestamp
-          layouts:
-            - '2006-01-02T15:04:05.999Z'
-      - drop_fields:
-          fields: [message]
-      - rename:
-          fields:
-            - from: message2
-              to: message
-      - drop_fields:
-          fields: [timestamp]
+
 
     # HTTP Requests log
-  - type: log
+  - type: filestream
+    id: http_requests_logs
     paths:
-      - "<enterprise_search_dir>/log/system.log*"
-    enabled: true
-    json.message_key:
-    json.keys_under_root: true
-    json.overwrite_keys: true
+      - "<enterprise-search-dir>log/system.log*"
+    parsers:
+      - ndjson:
+          keys_under_root: true
+          overwrite_keys: true
+          add_error_key: true
     fields:
-      event.dataset: enterprise_search.system
+      event.dataset: enterprise_search.http_requests
       service.name: '<deployment_name>'
       service.id: '<deployment_id>'
-      service.node.name: '<instance_id>'
       service.version: '<instance_version>'
-      service.type: 'enterprise-search'
+      service.node.name: '<instance_id>'
     fields_under_root: true
     processors:
       - timestamp:
           field: timestamp
           layouts:
             - '2006-01-02T15:04:05-07:00'
-      - script:
-          lang: javascript
-          id: convert_duration
-          source: >
-            function process(event) {
-              var duration = event.Get("duration");
-              if (duration) {
-                event.Put("event.duration", Math.round(duration * 1000000000));
-                event.Delete("duration");
-              }
-
-              return event;
-            }
       - drop_fields:
           fields: [timestamp]
       - rename:
