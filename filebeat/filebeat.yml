@@ -19,6 +19,11 @@ output.elasticsearch:
   # Index name for Enterprise Search logs
   index: "ent-search-logs-8"
   bulk_max_size: 50
+  # Set to "none" if your Elasticsearch instance is not secured.
+  ssl.verification_mode: full
+  ssl.enabled: true
+  ssl.certificate: "<path_to_elasticsearch_cert_pem>"
+  ssl.key: "<path_to_elasticsearch_cert_key>"
 
 setup.template:
   overwrite: false
@@ -35,6 +40,15 @@ setup.ilm:
 processors:
   - drop_event.when.has_fields:
       - labels.skip_ingest
+
+# -------------------------------- Kibana Setup --------------------------------
+setup.kibana:
+  host: "<kibana_host>" # e.g. https://localhost:5601
+  # Set to "none" if your Kibana instance is not secured.
+  ssl.verification_mode: full
+  ssl.enabled: true
+  ssl.certificate: "<path_to_elasticsearch_cert_pem>"
+  ssl.key: "<path_to_elasticsearch_cert_key>"
 
 # ============================= Filebeat Logging ===============================
 logging.level: info
