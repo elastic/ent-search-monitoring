@@ -20,11 +20,11 @@ The following dashboards are available at this time:
 
 Use this dashboard for self-managed Enterprise Search deployments.
 
-A general monitoring overview page with product usage information, HTTP metrics, low-level resource utilization information (JVM metrics) and background workers details.
+This dashboard provides a general monitoring overview page with product usage information, HTTP metrics, low-level resource utilization information (JVM metrics) and background workers details.
 
-This dashboard should work with standalone Metricbeat deployments and with Enterprise Search deployments running metricbeat as an internal monitoring component (see `monitoring.*` settings in `enterprise_search.yml`) starting with version 7.16.
+This dashboard works with standalone Metricbeat deployments and with Enterprise Search deployments running Metricbeat as an internal monitoring component. See `monitoring.*` settings in `enterprise_search.yml` starting with version 7.16.
 
 
 ### Enterprise Search Overview - Cloud
 
-It provides the Enterprise Search Overview dashboard for Elasticsearch Service managed deployments of Enterprise Search.
+Use this dashboard for Enterprise Search deployments running on Elastic Cloud.

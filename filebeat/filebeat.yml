@@ -51,7 +51,7 @@ filebeat.inputs:
   - type: filestream
     id: enterprise_search_logs
     paths:
-      - "<enterprise-search-dir>log/app-server.log*"
+      - "<enterprise-search-dir>/log/app-server.log*"
     parsers:
       - multiline:
           type: pattern
@@ -73,7 +73,7 @@ filebeat.inputs:
   - type: filestream
     id: connector_logs
     paths:
-      - "<enterprise-search-dir>log/connectors.log*"
+      - "<enterprise-search-dir>/log/connectors.log*"
     parsers:
       - multiline:
           type: pattern
@@ -92,7 +92,7 @@ filebeat.inputs:
   - type: filestream
     id: crawler_logs
     paths:
-      - "<enterprise-search-dir>log/crawler.log*"
+      - "<enterprise-search-dir>/log/crawler.log*"
     parsers:
       - multiline:
           type: pattern
@@ -111,7 +111,7 @@ filebeat.inputs:
   - type: filestream
     id: api_analytics_logs
     paths:
-      - "<enterprise-search-dir>log/filebeat.log*"
+      - "<enterprise-search-dir>/log/filebeat.log*"
     parsers:
       - ndjson:
           keys_under_root: true
@@ -133,7 +133,7 @@ filebeat.inputs:
   - type: filestream
     id: http_requests_logs
     paths:
-      - "<enterprise-search-dir>log/system.log*"
+      - "<enterprise-search-dir>/log/system.log*"
     parsers:
       - ndjson:
           keys_under_root: true
