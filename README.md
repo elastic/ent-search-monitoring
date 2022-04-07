@@ -1,36 +1,13 @@
 <p align="center"><img src="https://github.com/elastic/ent-search-monitoring/blob/main/logo-enterprise-search.png?raw=true" alt="Elastic Enterprise Search Logo"></p>
 
-# Elastic Enterprise Search Monitoring Dashboard
+# Elastic Enterprise Search Monitoring
 
-This repository contains a set of [Kibana dashboards](https://www.elastic.co/guide/en/kibana/current/dashboard.html) to be used with [Elastic Enterprise Search](https://www.elastic.co/enterprise-search) and Elastic Metricbeat for monitoring production deployments.
-
-**Please note:** These dashboards only work with Kibana and Enterprise Search versions 7.16.0 and higher. Dashboards differ between versions of the stack, so please pick the version closest to your current release, but not higher (8.0 for any 8.x release, 7.16 for releases before 8.0).
+This repository contains:
+- [Kibana dashboards](dashboard) to be used with [Elastic Enterprise Search](https://www.elastic.co/enterprise-search) and Elastic Metricbeat for monitoring production deployments.
+- [Filebeat configuration](filebeat) to be used with [Filebeat](https://www.elastic.co/guide/en/beats/filebeat) in order to ingest Enterprise Search log files into Elasticsearch.
 
 ## Download
 
-To download the dashboards, use the **Code** > **Download ZIP** option on this page. Extract the resulting .zip file and obtain the `dashboard/{VERSION}/*.ndjson` file(s) for your specific Enterprise Search version.
+To download this repository, use the **Code** > **Download ZIP** option on this page.
 
-## Installation
-
-Dashboards are imported on the **Stack Management > Saved objects** page. Full documentation on this process is available in [Kibana](https://www.elastic.co/guide/en/kibana/current/managing-saved-objects.html).
-
-After importing, visit the [Dashboard](https://www.elastic.co/guide/en/kibana/current/dashboard.html) tab to view and edit your imported dashboards.
-
-For more information on Enterprise Search monitoring, please refer to [Enterprise Search documentation](https://www.elastic.co/guide/en/enterprise-search/current/index.html).
-
-## Dashboards
-
-The following dashboards are available at this time:
-
-### Enterprise Search Overview
-
-Use this dashboard for self-managed Enterprise Search deployments.
-
-A general monitoring overview page with product usage information, HTTP metrics, low-level resource utilization information (JVM metrics) and background workers details.
-
-This dashboard should work with standalone Metricbeat deployments and with Enterprise Search deployments running metricbeat as an internal monitoring component (see `monitoring.*` settings in `enterprise_search.yml`) starting with version 7.16.
-
-
-### Enterprise Search Overview - Cloud
-
-It provides the Enterprise Search Overview dashboard for Elasticsearch Service managed deployments of Enterprise Search.
+Extract the resulting .zip file and refer to the setup instructions on each subdirectory.
